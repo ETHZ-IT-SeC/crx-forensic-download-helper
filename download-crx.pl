@@ -5,7 +5,8 @@
 # remaining ZIP archive.
 #
 # Author: Axel Beckert <axel@ethz.ch>
-# Copyright: 2022 ETH Zürich IT Security Center
+# Copyright: 2022 Axel Beckert
+#            2022 ETH Zürich IT Security Center
 # License: ISC (https://spdx.org/licenses/ISC)
 # Credits: Some hints (and license) taken from
 #          https://github.com/acvetkov/download-crx/blob/master/src/index.js
