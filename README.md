@@ -56,6 +56,19 @@ Options
   will detect existing files itself.)
 
 
+Dependencies / Requirements
+---------------------------
+
+This tool is written in (modern) [Perl](https://www.perl.org/) and
+only requires …
+
+* a single Perl module as dependency
+  ([Mojolicious](https://mojolicious.org/)) and …
+
+* at least Perl 5.16 (a requirement of the current version of
+  Mojolicious as of this writing).
+
+
 Credits
 -------
 
