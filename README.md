@@ -5,12 +5,12 @@ Synopsis
 --------
 
 ```
-download-crx.pl [--zip|-z] <extension id or extension URL>
-download-crx.pl --extract|-x <file>
-download-crx.pl [--extract|-x] <file>.crx
-download-crx.pl [--extract|-x] ./<path to file>
-download-crx.pl [--extract|-x] ../<path to file>
-download-crx.pl [--extract|-x] /<path to file>
+download-crx.pl [--zip|-z] <extension id or extension URL> […]
+download-crx.pl --extract|-x <file> […]
+download-crx.pl [--extract|-x] <file>.crx […]
+download-crx.pl [--extract|-x] ./<path to file> […]
+download-crx.pl [--extract|-x] ../<path to file> […]
+download-crx.pl [--extract|-x] /<path to file> […]
 ```
 
 
@@ -36,7 +36,7 @@ for forensic analyses.
 Parameters
 ----------
 
-The script requires a single parameter, which can be either:
+The script requires one or more parameters, which can be either:
 
 * An extension ID,
 * A Google Chrome Webstore Extension URL,
@@ -45,9 +45,8 @@ The script requires a single parameter, which can be either:
 If given an extension ID or a Google Chrome Webstore Extension URL, it
 will fetch that extension's CRX file from the Google Chrome Webstore.
 
-If given a local file (determined by either starting with `./`, `../`
-or `/` or by ending in `.crx` and not being a URL) it will only
-dump the contained ZIP archive.
+If given an existing local file, it will only dump the contained ZIP
+archive.
 
 
 Options

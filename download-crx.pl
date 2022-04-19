@@ -16,17 +16,17 @@ use Mojo::UserAgent;
 use Mojo::File;
 
 # Constants / Configuration
-my $url = 'https://update.googleapis.com/service/update2/crx?response=redirect&acceptformat=crx3&prodversion=38.0&testsource=download-crx&x=id%3DEXTENSION_ID%26installsource%3Dondemand%26uc';
+my $url_pattern = 'https://update.googleapis.com/service/update2/crx?response=redirect&acceptformat=crx3&prodversion=38.0&testsource=download-crx&x=id%3DEXTENSION_ID%26installsource%3Dondemand%26uc';
 my $user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36';
 my $referer = 'https://chrome.google.com';
 
 sub usage {
-    die "Usage: $0 [--zip|-z] <extension id or extension URL>\n".
-        "       $0 --extract|-x <file>\n".
-        "       $0 [--extract|-x] <file>.crx\n".
-        "       $0 [--extract|-x] ./<path to file>\n".
-        "       $0 [--extract|-x] ../<path to file>\n".
-        "       $0 [--extract|-x] /<path to file>\n";
+    die "Usage: $0 [--zip|-z] <extension id or extension URL> […]\n".
+        "       $0 --extract|-x <file> […]\n".
+        "       $0 [--extract|-x] <file>.crx […]\n".
+        "       $0 [--extract|-x] ./<path to file> […]\n".
+        "       $0 [--extract|-x] ../<path to file> […]\n".
+        "       $0 [--extract|-x] /<path to file> […]\n";
 }
 
 # commandline parameter handling
@@ -39,63 +39,66 @@ if (defined($ARGV[0]) and ($ARGV[0] eq '--zip' or $ARGV[0] eq '-z')) {
          ($ARGV[0] eq '--extract' or $ARGV[0] eq '-x')) {
     $extract_crx = 1;
     shift;
-} elsif (defined($ARGV[0]) and
-         (($ARGV[0] =~ m/\.crx$/ and
-           $ARGV[0] !~ m(://)) or
-          $ARGV[0] =~ m/^\.{0,2}/)) {
-    $extract_crx = 1;
 }
-unless (@ARGV == 1) {
+unless (@ARGV) {
     &usage();
 }
 
-if ($extract_crx == 0) {
-    my $extension_id;
-    if ($ARGV[0] =~ /^[a-z]{32}$/) {
-        $extension_id = $ARGV[0];
-    }
-    elsif ($ARGV[0] =~ m(^\Qhttps://chrome.google.com/webstore/detail/\E[-_A-Za-z0-9]+/([a-z]{32}$))) {
-        $extension_id = $1;
-    }
-    else {
-        warn "Can't find extension id in parameter \"$ARGV[0]\"!\n";
-        &usage();
+foreach my $extension (@ARGV) {
+    my $local_extract_crx = $extract_crx;
+    my $url = $url_pattern;
+    if (-r $extension) {
+        $local_extract_crx = 1;
     }
 
-    $url =~ s/EXTENSION_ID/$extension_id/;
-
-    my $ua  = Mojo::UserAgent->new;
-    my $result = $ua->max_redirects(10)
-                    ->get($url => {
-                        'Referer' => $referer,
-                            'User-Agent' => $user_agent,
-                         })->result;
-
-    if ($result->is_success) {
-        my $filename = "${extension_id}.crx";
-        $result->save_to($filename);
-        say "Saved as $filename";
-
-        if ($extract_zip) {
-            &extract_zip_from_crx($result->body, "${extension_id}.zip");
+    if ($local_extract_crx == 0) {
+        my $extension_id;
+        if ($extension =~ /^[a-z]{32}$/) {
+            $extension_id = $extension;
         }
-    } else {
-        warn $result->message;
-    }
-}
-# $extract_crx == 1
-else {
-    my $filename = $ARGV[0];
-    if ($filename !~ /\.crx$/) {
-        warn '"'.$filename.'" does not end in ".crx". '.
-             "Outcome maybe unexpected.\n";
-    }
-    $filename =~ s/\.crx$/.zip/;
-    unless ($filename =~ /\.zip$/) {
-        $filename .= '.zip';
-    }
-    &extract_zip_from_crx(Mojo::File->new($ARGV[0])->slurp, $filename);
+        elsif ($extension =~ m(^\Qhttps://chrome.google.com/webstore/detail/\E[-_A-Za-z0-9\%]+/([a-z]{32}$))) {
+            $extension_id = $1;
+        }
+        else {
+            warn "Can't find extension id in parameter \"$extension\"!\n";
+            &usage();
+        }
 
+        $url =~ s/EXTENSION_ID/$extension_id/;
+
+        my $ua = Mojo::UserAgent->new;
+        my $result = $ua->max_redirects(10)
+                        ->get($url => {
+                            'Referer' => $referer,
+                            'User-Agent' => $user_agent,
+                          })->result;
+
+        if ($result->is_success) {
+            my $filename = "${extension_id}.crx";
+            $result->save_to($filename);
+            say "Saved as $filename";
+
+            if ($extract_zip) {
+                &extract_zip_from_crx($result->body, "${extension_id}.zip");
+            }
+        } else {
+            warn $result->message;
+        }
+    }
+    # $local_extract_crx == 1
+    else {
+        my $filename = $extension;
+        if ($filename !~ /\.crx$/) {
+            warn '"'.$filename.'" does not end in ".crx". '.
+                 "Outcome maybe unexpected.\n";
+        }
+        $filename =~ s/\.crx$/.zip/;
+        unless ($filename =~ /\.zip$/) {
+            $filename .= '.zip';
+        }
+        &extract_zip_from_crx(Mojo::File->new($extension)->slurp, $filename);
+
+    }
 }
 
 sub extract_zip_from_crx {
