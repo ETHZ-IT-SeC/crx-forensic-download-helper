@@ -44,7 +44,6 @@ if (defined($ARGV[0]) and ($ARGV[0] eq '--zip' or $ARGV[0] eq '-z')) {
            $ARGV[0] !~ m(://)) or
           $ARGV[0] =~ m/^\.{0,2}/)) {
     $extract_crx = 1;
-    shift;
 }
 unless (@ARGV == 1) {
     &usage();
