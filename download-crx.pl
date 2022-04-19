@@ -22,11 +22,7 @@ my $referer = 'https://chrome.google.com';
 
 sub usage {
     die "Usage: $0 [--zip|-z] <extension id or extension URL> […]\n".
-        "       $0 --extract|-x <file> […]\n".
-        "       $0 [--extract|-x] <file>.crx […]\n".
-        "       $0 [--extract|-x] ./<path to file> […]\n".
-        "       $0 [--extract|-x] ../<path to file> […]\n".
-        "       $0 [--extract|-x] /<path to file> […]\n";
+        "       $0 [--extract|-x] <file> […]\n".
 }
 
 # commandline parameter handling

@@ -6,11 +6,7 @@ Synopsis
 
 ```
 download-crx.pl [--zip|-z] <extension id or extension URL> […]
-download-crx.pl --extract|-x <file> […]
-download-crx.pl [--extract|-x] <file>.crx […]
-download-crx.pl [--extract|-x] ./<path to file> […]
-download-crx.pl [--extract|-x] ../<path to file> […]
-download-crx.pl [--extract|-x] /<path to file> […]
+download-crx.pl [--extract|-x] <file> […]
 ```
 
 
@@ -55,7 +51,9 @@ Options
 * `-z`, `--zip`: Also dump the contained ZIP archive.
 
 * `-x`, `--extract`: Take the parameter as file name of a CRX format
-  file and dump its contained ZIP archive.
+  file and dump its contained ZIP archive. (This is only necessary if
+  the file name also looks like an extension ID. Otherwise the tool
+  will detect existing files itself.)
 
 
 Credits
