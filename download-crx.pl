@@ -111,7 +111,7 @@ sub extract_zip_from_crx {
 
     my $zip_file = Mojo::File->new($filename);
 
-    # Format 2 (Untested), according to
+    # Format 2, according to
     # http://www.dre.vanderbilt.edu/~schmidt/android/android-4.0/external/chromium/chrome/common/extensions/docs/crx.html
     if ($version == 2) {
         my $zip = substr($crx, 16 + $pubkey_or_header_len + $sign_len);
