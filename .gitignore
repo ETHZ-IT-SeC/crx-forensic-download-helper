@@ -1,0 +1,7 @@
+# Emacs style backup files and vim style swap files
+*~
+*.sw?
+
+# Example data and files downloaded with this tool
+*.crx
+*.zip
